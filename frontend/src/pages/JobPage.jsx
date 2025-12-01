@@ -1,12 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 const JobPage = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const deleteJob = async (id) => {
     try {
@@ -27,7 +27,7 @@ const JobPage = () => {
         console.log("id: ", id);
         const res = await fetch(`/api/jobs/${id}`);
         if (!res.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error("Network error");
         }
         const data = await res.json();
         setJob(data);
@@ -37,12 +37,11 @@ const JobPage = () => {
         setLoading(false);
       }
     };
-
     fetchJob();
   }, [id]);
 
-  const onDeleteClick = (jobId) => {
-    const confirm = window.confirm("Are you sure you want to delete this listing?");
+  const handleDelete = (jobId) => {
+    const confirm = window.confirm("Are you sure you want to delete this job?");
     if (!confirm) return;
 
     deleteJob(jobId);
@@ -63,7 +62,7 @@ const JobPage = () => {
           <p>Company: {job.company.name}</p>
           <p>Email: {job.company.contactEmail}</p>
           <p>Phone: {job.company.contactPhone}</p>
-          <button onClick={() => onDeleteClick(job._id)}>delete</button>
+          <button onClick={() => handleDelete(job._id)}>Delete</button>
         </>
       )}
     </div>
