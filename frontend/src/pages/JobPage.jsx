@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const JobPage = () => {
+const JobPage = ({isAuthenticated}) => {
   const { id } = useParams();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,7 +62,11 @@ const JobPage = () => {
           <p>Company: {job.company.name}</p>
           <p>Email: {job.company.contactEmail}</p>
           <p>Phone: {job.company.contactPhone}</p>
-          <button onClick={() => handleDelete(job._id)}>Delete</button>
+
+          <>
+            <button onClick={() => handleDelete(job._id)}>Delete</button>
+            <button onClick={() => navigate(`/edit-job/${job._id}`)}>Edit</button>
+          </>
         </>
       )}
     </div>
