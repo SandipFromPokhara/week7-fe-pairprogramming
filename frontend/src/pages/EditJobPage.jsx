@@ -15,6 +15,9 @@ const EditJobPage = () => {
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user ? user.token : null;
+
   const navigate = useNavigate();
 
   const updateJob = async (job) => {
@@ -23,6 +26,7 @@ const EditJobPage = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(job),
       });
@@ -81,10 +85,10 @@ const EditJobPage = () => {
 
     const success = await updateJob(updatedJob);
     if (success) {
-      // toast.success("Job Updated Successfully");
+      console.log("Job Updated Successfully");
       navigate(`/jobs/${id}`);
     } else {
-      // toast.error("Failed to update the job");
+      console.error("Failed to update the job");
     }
   };
 

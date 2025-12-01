@@ -6,8 +6,6 @@ const Home = () => {
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
 
-
-
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -28,6 +26,8 @@ const Home = () => {
 
   return (
     <div className="home">
+      <p>Welcome to HomePage</p>
+      <button onClick={() => alert("Please register and login to add job!")}>Add-Job</button>
       {error && <div>{error}</div>}
       {isPending && <div>Loading...</div>}
       {jobs && <JobListings jobs={jobs}/>}

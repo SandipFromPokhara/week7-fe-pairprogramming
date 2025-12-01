@@ -1,7 +1,8 @@
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
+import { Route, BrowserRouter, Routes, Navigate } from "react-router-dom";
+import { useState } from "react";
 
 // pages & components
-import MainLayout from "./layouts/MainLayout";
+import Navbar from "./components/Navbar";
 import Home from "./pages/HomePage";
 import AddJobPage from "./pages/AddJobPage";
 import JobPage from "./pages/JobPage";
@@ -11,21 +12,53 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 
 const App = () => {
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<Home />} />
-        <Route path="/add-job" element={<AddJobPage />} />
-        <Route path="/edit-job/:id" element={<EditJobPage />} />
-        <Route path="/jobs/:id" element={<JobPage />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    )
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user && user.token ? true : false;
+  });
+  
+   return (
+    <div className="App">
+      <BrowserRouter>
+      <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/jobs/:id" element={<JobPage isAuthenticated={isAuthenticated} />} />
+            <Route
+              path="/jobs/add-job"
+              element={isAuthenticated ? <AddJobPage /> : <Navigate to="/login" />}
+            />           
+            <Route
+              path="/edit-job/:id"
+              element={isAuthenticated ? <EditJobPage /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/signup"
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Signup setIsAuthenticated={setIsAuthenticated} />
+                )
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Login setIsAuthenticated={setIsAuthenticated} />
+                )
+              }
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </div>
   );
-
-  return <RouterProvider router={router} />;
 };
 
 export default App;

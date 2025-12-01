@@ -8,14 +8,21 @@ const JobPage = ({isAuthenticated}) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user ? user.token : null;
+
   const deleteJob = async (id) => {
     try {
       const res = await fetch(`/api/jobs/${id}`, {
         method: "DELETE",
+        headers: {Authorization: `Bearer ${token}`}
       });
       if (!res.ok) {
+        const errorText = await res.text();
         throw new Error("Failed to delete job");
       }
+      console.log("Job deleted successfully");
+      navigate("/");
     } catch (error) {
       console.error("Error deleting job:", error);
     }
@@ -63,10 +70,14 @@ const JobPage = ({isAuthenticated}) => {
           <p>Email: {job.company.contactEmail}</p>
           <p>Phone: {job.company.contactPhone}</p>
 
-          <>
-            <button onClick={() => handleDelete(job._id)}>Delete</button>
-            <button onClick={() => navigate(`/edit-job/${job._id}`)}>Edit</button>
-          </>
+          {isAuthenticated && (
+            <>
+              <button onClick={() => handleDelete(job._id)}>delete</button>
+              <button onClick={() => navigate(`/edit-job/${job._id}`)}>
+                edit
+              </button>
+            </>
+          )}
         </>
       )}
     </div>

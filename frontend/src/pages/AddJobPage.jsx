@@ -10,6 +10,9 @@ const AddJobPage = () => {
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user ? user.token : null;
+
   const navigate = useNavigate();
 
   const addJob = async (newJob) => {
@@ -18,20 +21,21 @@ const AddJobPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(newJob),
       });
       if (!res.ok) {
         throw new Error ("Failed to add job");
       }
+      return true;
     } catch (error) {
       console.error(error);
       return false;
     }
-    return true;
   };
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
 
     const newJob = {
@@ -45,11 +49,14 @@ const AddJobPage = () => {
       },
     };
 
-    addJob(newJob);
-    console.log(newJob);
-
-    return navigate("/");
-   };
+    const success = await addJob(newJob);
+    if (success) {
+      console.log("Job Added Successfully");
+      navigate("/");
+    } else {
+      console.error("Failed to add the job");
+    }
+  };
 
   return (
     <div className="create">
@@ -97,7 +104,7 @@ const AddJobPage = () => {
           value={contactPhone}
           onChange={(e) => setContactPhone(e.target.value)}
         />
-        <button>Add Job</button>
+        <button type="submit">Add Job</button>
       </form>
     </div>
   );
