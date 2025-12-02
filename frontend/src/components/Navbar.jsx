@@ -15,8 +15,8 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
       <div className="links">
         {isAuthenticated && (
           <div>
-            <Link to="/jobs/add-job">Add Job</Link>
-            <span>{JSON.parse(localStorage.getItem("user")).email}</span>
+            <Link to="/jobs/add-job" style={{ fontWeight: "bold"}}>Add Job</Link>
+            <span style={{ padding: "0 10px"}}>Welcome, {JSON.parse(localStorage.getItem("user")).email}</span>
             <button onClick={handleClick}>Log out</button>
           </div>
         )}

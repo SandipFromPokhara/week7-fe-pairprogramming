@@ -71,12 +71,12 @@ const JobPage = ({isAuthenticated}) => {
           <p>Phone: {job.company.contactPhone}</p>
 
           {isAuthenticated && (
-            <>
-              <button onClick={() => handleDelete(job._id)}>delete</button>
+            <div style={{ textAlign: "center", padding: 10}}>
+              <button style={{ marginRight: 20 }} onClick={() => handleDelete(job._id)}>Delete</button>
               <button onClick={() => navigate(`/edit-job/${job._id}`)}>
-                edit
+                Edit
               </button>
-            </>
+            </div>
           )}
         </>
       )}

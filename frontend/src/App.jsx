@@ -23,7 +23,7 @@ const App = () => {
       <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>
         <div className="content">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home isAuthenticated={isAuthenticated}/>} />
             <Route path="/jobs/:id" element={<JobPage isAuthenticated={isAuthenticated} />} />
             <Route
               path="/jobs/add-job"

@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const validator = require("validator");
 
 // Generate JWT
 const generateToken = (_id) => {
@@ -20,7 +21,6 @@ const signupUser = async (req, res) => {
     phone_number,
     gender,
     address,
-
   } = req.body;
   try {
     if (
@@ -28,11 +28,14 @@ const signupUser = async (req, res) => {
       !email ||
       !password ||
       !phone_number ||
-      !gender ||
-      !address
+      !gender
     ) {
       res.status(400);
       throw new Error("Please add all fields");
+    }
+    if (! address || !address.street || ! address.city || ! address.zipCode) {
+      res.status(400);
+      throw new Error("Please fill in address details too")
     }
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -42,6 +45,11 @@ const signupUser = async (req, res) => {
       throw new Error("User already exists");
     }
 
+    if(!validator.isEmail(email)) throw new Error("Email format is not valid!");
+
+    if(!validator.isStrongPassword(password)) throw new Error("Password is not strong!");
+
+    if (!validator.isNumeric(phone_number)) throw new Error("Not a valid phone-number");
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
